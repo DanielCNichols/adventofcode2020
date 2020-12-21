@@ -43,7 +43,7 @@ function check(passports) {
       (fields.includes('cid') && fields.length === 8) ||
       (!fields.includes('cid') && fields.length === 7)
     ) {
-      if (validateVals(passport)) {
+      if (validateVals(passport) === true) {
         count++;
       }
     }
@@ -52,29 +52,55 @@ function check(passports) {
 }
 
 function validateVals(passport) {
-  let res;
-
   if (passport.byr < 1920 || passport.byr > 2002) {
-    res = false;
+    return false;
   }
 
   if (passport.iyr < 2010 || passport.iyr > 2020) {
-    res = false;
+    return false;
   }
 
   if (passport.eyr < 2020 || passport.eyr > 2030) {
-    res = false;
+    return false;
+  }
+
+  if (!passport.hgt.endsWith('cm') && !passport.hgt.endsWith('in')) {
+    return false;
   }
 
   if (passport.hgt.endsWith('cm')) {
-    passport.hgt.replace('cm', '');
-    if (passport.hgt < 150 || passport.hgt > 193) res = false;
+    let height = passport.hgt.replace('cm', '');
+    if (height < 150 || height > 193) {
+      return false;
+    }
   } else if (passport.hgt.endsWith('in')) {
-    passport.hgt.replace('in', '');
-    if (passport.hgt < 59 || passport.hgt > 76) {
-      res = false;
+    let height = passport.hgt.replace('in', '');
+    if (height < 59 || height > 76) {
+      return false;
     }
   }
+
+  let regEx = /^#[a-f0-9]{6}$/;
+
+  if (regEx.test(passport.hcl) === false) {
+    return false;
+  }
+
+  let pidReg = /^[0-9]{9}$/;
+
+  if (pidReg.test(passport.pid) === false) {
+    return false;
+  }
+
+  let colors = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'];
+
+  if (!colors.includes(passport.ecl)) {
+    return false;
+  }
+
+  return true;
 }
 
 main();
+
+//hair color is a # and 6 chars 0-9, a-f;
