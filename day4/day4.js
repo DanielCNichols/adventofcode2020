@@ -59,7 +59,6 @@ function validateVals(passport) {
   if (passport.iyr < 2010 || passport.iyr > 2020) {
     return false;
   }
-
   if (passport.eyr < 2020 || passport.eyr > 2030) {
     return false;
   }
